@@ -1,0 +1,65 @@
+@model IReadOnlyList<Parcial.Models.SolicitudCredito>
+
+@{
+    ViewData["Title"] = "Panel de Analista";
+}
+
+<h1 class="mb-3">Panel de Analista</h1>
+
+@if (TempData["SuccessMessage"] is string successMessage)
+{
+    <div class="alert alert-success">@successMessage</div>
+}
+
+@if (TempData["ErrorMessage"] is string errorMessage)
+{
+    <div class="alert alert-danger">@errorMessage</div>
+}
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">No hay solicitudes pendientes para procesar.</div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered align-middle">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Cliente</th>
+                    <th>Ingresos cliente</th>
+                    <th>Monto solicitado</th>
+                    <th>Fecha solicitud</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var solicitud in Model)
+            {
+                <tr>
+                    <td>@solicitud.Id</td>
+                    <td>@solicitud.ClienteId</td>
+                    <td>@(solicitud.Cliente?.IngresosMensuales.ToString("C") ?? "N/A")</td>
+                    <td>@solicitud.MontoSolicitado.ToString("C")</td>
+                    <td>@solicitud.FechaSolicitud.ToString("yyyy-MM-dd HH:mm")</td>
+                    <td>
+                        <div class="d-flex flex-column gap-2">
+                            <form asp-action="Aprobar" asp-route-id="@solicitud.Id" method="post">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-sm btn-success">Aprobar</button>
+                            </form>
+
+                            <form asp-action="Rechazar" asp-route-id="@solicitud.Id" method="post" class="d-flex gap-2">
+                                @Html.AntiForgeryToken()
+                                <input name="motivoRechazo" class="form-control form-control-sm" placeholder="Motivo de rechazo" required />
+                                <button type="submit" class="btn btn-sm btn-danger">Rechazar</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+}
