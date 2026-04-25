@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: parcial
+    env: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /
+    disk:
+      name: parcial-data
+      mountPath: /var/data
+      sizeGB: 1
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: ConnectionStrings__DefaultConnection
+        value: DataSource=/var/data/app.db;Cache=Shared
