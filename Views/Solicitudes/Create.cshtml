@@ -1,0 +1,39 @@
+@model Parcial.Models.SolicitudRegistroViewModel
+
+@{
+    ViewData["Title"] = "Nueva solicitud";
+}
+
+<h1 class="mb-3">Registrar solicitud</h1>
+
+@if (!string.IsNullOrWhiteSpace(Model.SuccessMessage))
+{
+    <div class="alert alert-success">@Model.SuccessMessage</div>
+}
+
+<div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+<form asp-action="Create" method="post" class="row g-3">
+    <div class="col-md-6">
+        <label asp-for="ClienteId" class="form-label">Cliente</label>
+        <select asp-for="ClienteId" asp-items="Model.Clientes" class="form-select">
+            <option value="">Seleccione un cliente</option>
+        </select>
+        <span asp-validation-for="ClienteId" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="MontoSolicitado" class="form-label">Monto solicitado</label>
+        <input asp-for="MontoSolicitado" class="form-control" type="number" step="0.01" min="0.01" />
+        <span asp-validation-for="MontoSolicitado" class="text-danger"></span>
+    </div>
+
+    <div class="col-12">
+        <button type="submit" class="btn btn-primary">Guardar solicitud</button>
+        <a asp-action="Index" class="btn btn-outline-secondary">Volver</a>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
