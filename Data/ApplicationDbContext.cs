@@ -9,6 +9,9 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 {
 	private const string AnalistaRoleId = "4f6fd1d9-b1ef-4200-9827-6ce304f2b001";
 	private const string AnalistaUserId = "c31ccfbc-df70-456b-9666-4f083ec3f08e";
+	private const string ClienteUnoUserId = "f489a6ff-7eb1-4d5a-86d8-5bf910ca0701";
+	private const string ClienteDosUserId = "1a311f98-fd47-47d4-9a11-4fbd56f8de03";
+	private const string SeedPasswordHash = "AQAAAAIAAYagAAAAEIJrgXtc5St3z4Z5kh9XpgeSk6nQvrj6yqNPT0R7LIa/73TLwZNLFAbojebTtOLung==";
 
 	public DbSet<Cliente> Clientes => Set<Cliente>();
 	public DbSet<SolicitudCredito> SolicitudesCredito => Set<SolicitudCredito>();
@@ -33,14 +36,14 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 				new Cliente
 				{
 					Id = 1,
-					UsuarioId = AnalistaUserId,
+					UsuarioId = ClienteUnoUserId,
 					IngresosMensuales = 1000m,
 					Activo = true
 				},
 				new Cliente
 				{
 					Id = 2,
-					UsuarioId = AnalistaUserId,
+					UsuarioId = ClienteDosUserId,
 					IngresosMensuales = 2500m,
 					Activo = true
 				});
@@ -93,22 +96,48 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 			ConcurrencyStamp = "f9c55b8a-3c88-4b03-9193-cfc6beb8ebbc"
 		};
 
-		var user = new IdentityUser
+		var analistaUser = new IdentityUser
 		{
 			Id = AnalistaUserId,
-			UserName = "analista@parcial.local",
-			NormalizedUserName = "ANALISTA@PARCIAL.LOCAL",
-			Email = "analista@parcial.local",
-			NormalizedEmail = "ANALISTA@PARCIAL.LOCAL",
+			UserName = "analista@parcial.com",
+			NormalizedUserName = "ANALISTA@PARCIAL.COM",
+			Email = "analista@parcial.com",
+			NormalizedEmail = "ANALISTA@PARCIAL.COM",
 			EmailConfirmed = true,
 			SecurityStamp = "EAAE2E2A-A58F-4B08-B9EE-E06D9EA82185",
 			ConcurrencyStamp = "6D71E2FC-A9BD-4186-81D0-6AC7A9E85683"
 		};
 
-		user.PasswordHash = "AQAAAAIAAYagAAAAEIJrgXtc5St3z4Z5kh9XpgeSk6nQvrj6yqNPT0R7LIa/73TLwZNLFAbojebTtOLung==";
+		analistaUser.PasswordHash = SeedPasswordHash;
+
+		var clienteUnoUser = new IdentityUser
+		{
+			Id = ClienteUnoUserId,
+			UserName = "cliente1@parcial.com",
+			NormalizedUserName = "CLIENTE1@PARCIAL.COM",
+			Email = "cliente1@parcial.com",
+			NormalizedEmail = "CLIENTE1@PARCIAL.COM",
+			EmailConfirmed = true,
+			SecurityStamp = "7A31D7D1-5B16-4A78-80FA-5AF8E3310C5D",
+			ConcurrencyStamp = "D8689711-5F43-40B6-8F06-71DBDECC80B7",
+			PasswordHash = SeedPasswordHash
+		};
+
+		var clienteDosUser = new IdentityUser
+		{
+			Id = ClienteDosUserId,
+			UserName = "cliente2@parcial.com",
+			NormalizedUserName = "CLIENTE2@PARCIAL.COM",
+			Email = "cliente2@parcial.com",
+			NormalizedEmail = "CLIENTE2@PARCIAL.COM",
+			EmailConfirmed = true,
+			SecurityStamp = "B6B4B3CA-F8A9-430E-9C9D-B61CC688D272",
+			ConcurrencyStamp = "75925CD1-08AF-49A1-98C1-4E56E8A6AE04",
+			PasswordHash = SeedPasswordHash
+		};
 
 		builder.Entity<IdentityRole>().HasData(role);
-		builder.Entity<IdentityUser>().HasData(user);
+		builder.Entity<IdentityUser>().HasData(analistaUser, clienteUnoUser, clienteDosUser);
 		builder.Entity<IdentityUserRole<string>>().HasData(new IdentityUserRole<string>
 		{
 			UserId = AnalistaUserId,
