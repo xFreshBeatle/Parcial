@@ -1,0 +1,92 @@
+@model Parcial.Models.SolicitudFiltroViewModel
+
+@{
+    ViewData["Title"] = "Mis solicitudes";
+}
+
+<h1 class="mb-3">Mis solicitudes</h1>
+
+<form method="get" class="row g-3 mb-4">
+    <div class="col-md-3">
+        <label asp-for="Estado" class="form-label"></label>
+        <select asp-for="Estado" asp-items="Html.GetEnumSelectList<EstadoSolicitud>()" class="form-select">
+            <option value="">Todos</option>
+        </select>
+    </div>
+    <div class="col-md-3">
+        <label asp-for="MontoMinimo" class="form-label">Monto minimo</label>
+        <input asp-for="MontoMinimo" class="form-control" type="number" step="0.01" min="0" />
+    </div>
+    <div class="col-md-3">
+        <label asp-for="MontoMaximo" class="form-label">Monto maximo</label>
+        <input asp-for="MontoMaximo" class="form-control" type="number" step="0.01" min="0" />
+    </div>
+    <div class="col-md-3">
+        <label asp-for="FechaInicio" class="form-label">Fecha inicio</label>
+        <input asp-for="FechaInicio" class="form-control" type="date" />
+    </div>
+    <div class="col-md-3">
+        <label asp-for="FechaFin" class="form-label">Fecha fin</label>
+        <input asp-for="FechaFin" class="form-control" type="date" />
+    </div>
+    <div class="col-12">
+        <button type="submit" class="btn btn-primary">Filtrar</button>
+        <a asp-action="Index" class="btn btn-outline-secondary">Limpiar</a>
+    </div>
+
+    <div class="col-12">
+        <div asp-validation-summary="All" class="text-danger"></div>
+    </div>
+</form>
+
+@if (!Model.Resultados.Any())
+{
+    <div class="alert alert-info">No se encontraron solicitudes con los filtros seleccionados.</div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered align-middle">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Monto solicitado</th>
+                    <th>Fecha solicitud</th>
+                    <th>Estado</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var solicitud in Model.Resultados)
+            {
+                <tr>
+                    <td>@solicitud.Id</td>
+                    <td>@solicitud.MontoSolicitado.ToString("C")</td>
+                    <td>@solicitud.FechaSolicitud.ToString("yyyy-MM-dd")</td>
+                    <td>
+                        @switch (solicitud.Estado)
+                        {
+                            case EstadoSolicitud.Aprobado:
+                                <span class="badge bg-success">Aprobado</span>
+                                break;
+                            case EstadoSolicitud.Rechazado:
+                                <span class="badge bg-danger">Rechazado</span>
+                                break;
+                            default:
+                                <span class="badge bg-warning text-dark">Pendiente</span>
+                                break;
+                        }
+                    </td>
+                    <td class="text-nowrap">
+                        <a asp-action="Details" asp-route-id="@solicitud.Id" class="btn btn-sm btn-outline-primary">Ver detalle</a>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
