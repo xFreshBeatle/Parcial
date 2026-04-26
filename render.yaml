@@ -5,6 +5,7 @@ services:
     plan: free
     dockerfilePath: ./Dockerfile
     healthCheckPath: /
+    autoDeploy: true
     disk:
       name: parcial-data
       mountPath: /var/data
@@ -14,3 +15,5 @@ services:
         value: Production
       - key: ConnectionStrings__DefaultConnection
         value: DataSource=/var/data/app.db;Cache=Shared
+      - key: ASPNETCORE_URLS
+        value: http://+:8080
