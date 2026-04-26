@@ -2,7 +2,34 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="hero-panel">
+    <div class="row align-items-center g-4">
+        <div class="col-lg-7">
+            <span class="hero-kicker">Sistema de solicitudes</span>
+            <h1 class="mt-3 mb-3">Gestión de créditos con una interfaz limpia, elegante y rápida.</h1>
+            <p class="page-subtitle mb-0">
+                Navega tus solicitudes, registra nuevas peticiones y procesa el panel del analista desde una experiencia más clara y visual.
+            </p>
+
+            <div class="hero-actions">
+                <a asp-controller="Solicitudes" asp-action="Index" class="btn btn-primary">Mis solicitudes</a>
+                <a asp-controller="Solicitudes" asp-action="Create" class="btn btn-outline-primary">Nueva solicitud</a>
+            </div>
+        </div>
+
+        <div class="col-lg-5">
+            <div class="summary-tile mb-3">
+                <span class="summary-label">Estado visual</span>
+                <span class="summary-value">Moderno y responsive</span>
+            </div>
+            <div class="summary-tile mb-3">
+                <span class="summary-label">Flujo principal</span>
+                <span class="summary-value">Registro, catálogo y análisis</span>
+            </div>
+            <div class="summary-tile">
+                <span class="summary-label">Panel disponible</span>
+                <span class="summary-value">Analista con aprobación y rechazo</span>
+            </div>
+        </div>
+    </div>
 </div>
