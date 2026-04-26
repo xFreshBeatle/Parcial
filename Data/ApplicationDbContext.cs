@@ -12,6 +12,9 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 	private const string ClienteUnoUserId = "f489a6ff-7eb1-4d5a-86d8-5bf910ca0701";
 	private const string ClienteDosUserId = "1a311f98-fd47-47d4-9a11-4fbd56f8de03";
 	private const string SeedPasswordHash = "AQAAAAIAAYagAAAAEIJrgXtc5St3z4Z5kh9XpgeSk6nQvrj6yqNPT0R7LIa/73TLwZNLFAbojebTtOLung==";
+	private const string AnalistaEmail = "analista.credito@parcial.com";
+	private const string ClienteUnoEmail = "cliente.uno@parcial.com";
+	private const string ClienteDosEmail = "cliente.dos@parcial.com";
 
 	public DbSet<Cliente> Clientes => Set<Cliente>();
 	public DbSet<SolicitudCredito> SolicitudesCredito => Set<SolicitudCredito>();
@@ -99,10 +102,10 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 		var analistaUser = new IdentityUser
 		{
 			Id = AnalistaUserId,
-			UserName = "analista@parcial.com",
-			NormalizedUserName = "ANALISTA@PARCIAL.COM",
-			Email = "analista@parcial.com",
-			NormalizedEmail = "ANALISTA@PARCIAL.COM",
+			UserName = AnalistaEmail,
+			NormalizedUserName = AnalistaEmail.ToUpperInvariant(),
+			Email = AnalistaEmail,
+			NormalizedEmail = AnalistaEmail.ToUpperInvariant(),
 			EmailConfirmed = true,
 			SecurityStamp = "EAAE2E2A-A58F-4B08-B9EE-E06D9EA82185",
 			ConcurrencyStamp = "6D71E2FC-A9BD-4186-81D0-6AC7A9E85683"
@@ -113,10 +116,10 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 		var clienteUnoUser = new IdentityUser
 		{
 			Id = ClienteUnoUserId,
-			UserName = "cliente1@parcial.com",
-			NormalizedUserName = "CLIENTE1@PARCIAL.COM",
-			Email = "cliente1@parcial.com",
-			NormalizedEmail = "CLIENTE1@PARCIAL.COM",
+			UserName = ClienteUnoEmail,
+			NormalizedUserName = ClienteUnoEmail.ToUpperInvariant(),
+			Email = ClienteUnoEmail,
+			NormalizedEmail = ClienteUnoEmail.ToUpperInvariant(),
 			EmailConfirmed = true,
 			SecurityStamp = "7A31D7D1-5B16-4A78-80FA-5AF8E3310C5D",
 			ConcurrencyStamp = "D8689711-5F43-40B6-8F06-71DBDECC80B7",
@@ -126,10 +129,10 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 		var clienteDosUser = new IdentityUser
 		{
 			Id = ClienteDosUserId,
-			UserName = "cliente2@parcial.com",
-			NormalizedUserName = "CLIENTE2@PARCIAL.COM",
-			Email = "cliente2@parcial.com",
-			NormalizedEmail = "CLIENTE2@PARCIAL.COM",
+			UserName = ClienteDosEmail,
+			NormalizedUserName = ClienteDosEmail.ToUpperInvariant(),
+			Email = ClienteDosEmail,
+			NormalizedEmail = ClienteDosEmail.ToUpperInvariant(),
 			EmailConfirmed = true,
 			SecurityStamp = "B6B4B3CA-F8A9-430E-9C9D-B61CC688D272",
 			ConcurrencyStamp = "75925CD1-08AF-49A1-98C1-4E56E8A6AE04",

@@ -78,13 +78,13 @@ app.Run();
 static async Task EnsureSeedIdentityAsync(RoleManager<IdentityRole> roleManager, UserManager<IdentityUser> userManager)
 {
     const string analistaRole = "Analista";
-    const string seedPassword = "Parcial2026!";
+    const string seedPassword = "ParcialSegura2026!";
 
     var seedUsers = new[]
     {
-        new { Email = "analista@parcial.com", IsAnalista = true },
-        new { Email = "cliente1@parcial.com", IsAnalista = false },
-        new { Email = "cliente2@parcial.com", IsAnalista = false }
+        new { Id = "c31ccfbc-df70-456b-9666-4f083ec3f08e", Email = "analista.credito@parcial.com", IsAnalista = true },
+        new { Id = "f489a6ff-7eb1-4d5a-86d8-5bf910ca0701", Email = "cliente.uno@parcial.com", IsAnalista = false },
+        new { Id = "1a311f98-fd47-47d4-9a11-4fbd56f8de03", Email = "cliente.dos@parcial.com", IsAnalista = false }
     };
 
     if (!await roleManager.RoleExistsAsync(analistaRole))
@@ -98,11 +98,14 @@ static async Task EnsureSeedIdentityAsync(RoleManager<IdentityRole> roleManager,
 
     foreach (var seedUser in seedUsers)
     {
-        var user = await userManager.FindByEmailAsync(seedUser.Email);
+        var user = await userManager.FindByIdAsync(seedUser.Id);
+        user ??= await userManager.FindByEmailAsync(seedUser.Email);
+
         if (user is null)
         {
             user = new IdentityUser
             {
+                Id = seedUser.Id,
                 UserName = seedUser.Email,
                 Email = seedUser.Email,
                 EmailConfirmed = true
@@ -118,6 +121,8 @@ static async Task EnsureSeedIdentityAsync(RoleManager<IdentityRole> roleManager,
         {
             user.UserName = seedUser.Email;
             user.Email = seedUser.Email;
+            user.NormalizedUserName = seedUser.Email.ToUpperInvariant();
+            user.NormalizedEmail = seedUser.Email.ToUpperInvariant();
             user.EmailConfirmed = true;
 
             var updateUserResult = await userManager.UpdateAsync(user);

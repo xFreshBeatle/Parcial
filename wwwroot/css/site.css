@@ -1,5 +1,20 @@
+:root {
+  --brand-ink: #13324a;
+  --brand-accent: #ff7a18;
+  --brand-accent-2: #ffc55b;
+  --surface: #ffffff;
+  --surface-soft: #f6f8fb;
+  --border-soft: #dce6ef;
+  --text-main: #223344;
+  --text-soft: #5b6f82;
+  --shadow-soft: 0 14px 32px rgba(18, 35, 52, 0.1);
+  --radius-md: 12px;
+  --radius-lg: 18px;
+}
+
 html {
-  font-size: 14px;
+  font-size: 15px;
+  min-height: 100%;
 }
 
 @media (min-width: 768px) {
@@ -8,24 +23,117 @@ html {
   }
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
-}
-
 body {
-  margin-bottom: 60px;
+  min-height: 100vh;
+  margin: 0;
+  color: var(--text-main);
+  font-family: "Segoe UI", "Trebuchet MS", sans-serif;
+  background:
+    radial-gradient(circle at 12% 12%, rgba(255, 197, 91, 0.55), rgba(255, 197, 91, 0) 34%),
+    radial-gradient(circle at 85% 6%, rgba(255, 122, 24, 0.34), rgba(255, 122, 24, 0) 28%),
+    linear-gradient(175deg, #f5f9fd 0%, #edf4fb 48%, #f6f9fd 100%);
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
+.navbar {
+  background: linear-gradient(90deg, #ffffff 0%, #f7fbff 100%) !important;
+  border-bottom: 1px solid var(--border-soft) !important;
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+}
+
+.navbar-brand {
+  color: var(--brand-ink) !important;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+.nav-link {
+  color: var(--text-main) !important;
+  font-weight: 600;
+}
+
+.nav-link:hover {
+  color: var(--brand-accent) !important;
+}
+
+.container main {
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+  padding: 1.25rem;
+}
+
+@media (min-width: 992px) {
+  .container main {
+    padding: 1.75rem;
+  }
+}
+
+.btn,
+.btn-primary {
+  border-radius: var(--radius-md);
+  border-color: var(--brand-accent);
+  background: linear-gradient(135deg, var(--brand-accent) 0%, var(--brand-accent-2) 100%);
+  color: #102434;
+  font-weight: 700;
+}
+
+.btn:hover,
+.btn-primary:hover {
+  filter: brightness(0.97);
+  transform: translateY(-1px);
+}
+
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-check-input:focus {
+  box-shadow: 0 0 0 0.2rem rgba(255, 122, 24, 0.3);
+}
+
+.card,
+table,
+.table {
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border-color: var(--border-soft);
+}
+
+.table > :not(caption) > * > * {
+  background-color: transparent;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  color: var(--brand-ink);
+  font-weight: 700;
+}
+
+.form-control,
+.form-select {
+  border-radius: 10px;
+  border-color: #c8d8e6;
+}
+
+.form-floating > .form-control-plaintext::placeholder,
+.form-floating > .form-control::placeholder {
+  color: var(--text-soft);
   text-align: end;
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
+.form-floating > .form-control-plaintext:focus::placeholder,
+.form-floating > .form-control:focus::placeholder {
   text-align: start;
+}
+
+.footer {
+  margin-top: 1rem;
+  border-top: 1px solid var(--border-soft) !important;
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--text-soft) !important;
 }
