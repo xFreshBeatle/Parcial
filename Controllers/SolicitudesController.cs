@@ -1,7 +1,6 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Parcial.Data;
 using Parcial.Models;
@@ -20,17 +19,13 @@ public class SolicitudesController(ApplicationDbContext context) : Controller
             return Challenge();
         }
 
-        var model = new SolicitudRegistroViewModel
-        {
-            Clientes = await BuildClienteOptionsAsync(userId)
-        };
-
-        if (!model.Clientes.Any())
+        var clienteActivo = await GetPrimerClienteActivoAsync(userId);
+        if (clienteActivo is null)
         {
             ModelState.AddModelError(string.Empty, "No tiene clientes activos para registrar solicitudes.");
         }
 
-        return View(model);
+        return View(new SolicitudRegistroViewModel());
     }
 
     [HttpPost]
@@ -43,13 +38,6 @@ public class SolicitudesController(ApplicationDbContext context) : Controller
             return Challenge();
         }
 
-        model.Clientes = await BuildClienteOptionsAsync(userId);
-
-        if (!model.Clientes.Any())
-        {
-            ModelState.AddModelError(string.Empty, "No tiene clientes activos para registrar solicitudes.");
-        }
-
         if (model.MontoSolicitado <= 0)
         {
             ModelState.AddModelError(nameof(model.MontoSolicitado), "El monto solicitado debe ser mayor a 0.");
@@ -60,9 +48,7 @@ public class SolicitudesController(ApplicationDbContext context) : Controller
             return View(model);
         }
 
-        var cliente = await context.Clientes
-            .AsNoTracking()
-            .FirstOrDefaultAsync(c => c.Id == model.ClienteId && c.UsuarioId == userId && c.Activo);
+        var cliente = await GetPrimerClienteActivoAsync(userId);
 
         if (cliente is null)
         {
@@ -101,8 +87,6 @@ public class SolicitudesController(ApplicationDbContext context) : Controller
 
         var successModel = new SolicitudRegistroViewModel
         {
-            ClienteId = cliente.Id,
-            Clientes = await BuildClienteOptionsAsync(userId),
             SuccessMessage = $"Solicitud #{solicitud.Id} registrada exitosamente en estado Pendiente."
         };
 
@@ -184,17 +168,12 @@ public class SolicitudesController(ApplicationDbContext context) : Controller
         return View(solicitud);
     }
 
-    private async Task<List<SelectListItem>> BuildClienteOptionsAsync(string userId)
+    private async Task<Cliente?> GetPrimerClienteActivoAsync(string userId)
     {
         return await context.Clientes
             .AsNoTracking()
             .Where(c => c.UsuarioId == userId && c.Activo)
             .OrderBy(c => c.Id)
-            .Select(c => new SelectListItem
-            {
-                Value = c.Id.ToString(),
-                Text = $"Cliente {c.Id} - Ingresos {c.IngresosMensuales:C}"
-            })
-            .ToListAsync();
+            .FirstOrDefaultAsync();
     }
 }
