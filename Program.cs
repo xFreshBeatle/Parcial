@@ -28,6 +28,38 @@ builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
+// Ensure database directory exists and run migrations
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+
+    // Create directory if it doesn't exist
+    var dbPath = dbContext.Database.GetConnectionString()?.Split("=")[1]?.Split(";")[0];
+    if (!string.IsNullOrWhiteSpace(dbPath))
+    {
+        var dbDirectory = Path.GetDirectoryName(dbPath);
+        if (!string.IsNullOrWhiteSpace(dbDirectory) && !Directory.Exists(dbDirectory))
+        {
+            Directory.CreateDirectory(dbDirectory);
+        }
+    }
+
+    // Apply migrations
+    await dbContext.Database.MigrateAsync();
+    await EnsureSeedIdentityAsync(roleManager, userManager);
+}
+
+static async Task EnsureSeedIdentityAsync(RoleManager<IdentityRole> roleManager, UserManager<IdentityUser> userManager)
+{
+    var adminRole = await roleManager.FindByNameAsync("Analista");
+    if (adminRole == null)
+    {
+        await roleManager.CreateAsync(new IdentityRole("Analista"));
+    }
+}
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
