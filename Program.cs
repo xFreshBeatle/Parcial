@@ -29,26 +29,36 @@ builder.Services.AddControllersWithViews();
 var app = builder.Build();
 
 // Ensure database directory exists and run migrations
-using (var scope = app.Services.CreateScope())
+try
 {
-    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
-
-    // Create directory if it doesn't exist
-    var dbPath = dbContext.Database.GetConnectionString()?.Split("=")[1]?.Split(";")[0];
-    if (!string.IsNullOrWhiteSpace(dbPath))
+    using (var scope = app.Services.CreateScope())
     {
-        var dbDirectory = Path.GetDirectoryName(dbPath);
-        if (!string.IsNullOrWhiteSpace(dbDirectory) && !Directory.Exists(dbDirectory))
-        {
-            Directory.CreateDirectory(dbDirectory);
-        }
-    }
+        var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
 
-    // Apply migrations
-    await dbContext.Database.MigrateAsync();
-    await EnsureSeedIdentityAsync(roleManager, userManager);
+        // Create directory if it doesn't exist
+        var dbPath = dbContext.Database.GetConnectionString()?.Split("=")[1]?.Split(";")[0];
+        if (!string.IsNullOrWhiteSpace(dbPath))
+        {
+            var dbDirectory = Path.GetDirectoryName(dbPath);
+            if (!string.IsNullOrWhiteSpace(dbDirectory) && !Directory.Exists(dbDirectory))
+            {
+                Directory.CreateDirectory(dbDirectory);
+            }
+        }
+
+        // Apply migrations with timeout
+        var cts = new System.Threading.CancellationTokenSource(TimeSpan.FromSeconds(30));
+        await dbContext.Database.MigrateAsync(cts.Token);
+        await EnsureSeedIdentityAsync(roleManager, userManager);
+    }
+}
+catch (Exception ex)
+{
+    Console.WriteLine($"Error durante inicialización de BD: {ex.Message}");
+    Console.WriteLine($"Stack trace: {ex.StackTrace}");
+    // No falla la aplicación, continúa de todas formas
 }
 
 static async Task EnsureSeedIdentityAsync(RoleManager<IdentityRole> roleManager, UserManager<IdentityUser> userManager)
