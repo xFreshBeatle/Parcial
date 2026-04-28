@@ -53,10 +53,50 @@ using (var scope = app.Services.CreateScope())
 
 static async Task EnsureSeedIdentityAsync(RoleManager<IdentityRole> roleManager, UserManager<IdentityUser> userManager)
 {
-    var adminRole = await roleManager.FindByNameAsync("Analista");
-    if (adminRole == null)
+    const string analistaRole = "Analista";
+    const string seedPassword = "Parcial2026!";
+
+    // Crear rol Analista si no existe
+    if (!await roleManager.RoleExistsAsync(analistaRole))
     {
-        await roleManager.CreateAsync(new IdentityRole("Analista"));
+        await roleManager.CreateAsync(new IdentityRole(analistaRole));
+    }
+
+    // Usuarios de prueba
+    var seedUsers = new[]
+    {
+        new { Email = "analista@parcial.com", IsAnalista = true },
+        new { Email = "cliente1@parcial.com", IsAnalista = false },
+        new { Email = "cliente2@parcial.com", IsAnalista = false }
+    };
+
+    foreach (var seedUser in seedUsers)
+    {
+        var user = await userManager.FindByEmailAsync(seedUser.Email);
+        if (user == null)
+        {
+            user = new IdentityUser
+            {
+                UserName = seedUser.Email,
+                Email = seedUser.Email,
+                EmailConfirmed = true
+            };
+
+            var createResult = await userManager.CreateAsync(user, seedPassword);
+            if (!createResult.Succeeded)
+            {
+                throw new InvalidOperationException($"No se pudo crear usuario: {seedUser.Email}");
+            }
+        }
+
+        // Asignar rol Analista si corresponde
+        if (seedUser.IsAnalista)
+        {
+            if (!await userManager.IsInRoleAsync(user, analistaRole))
+            {
+                await userManager.AddToRoleAsync(user, analistaRole);
+            }
+        }
     }
 }
 
