@@ -9,8 +9,13 @@ RUN dotnet publish ./Parcial.csproj -c Release -o /app/publish /p:UseAppHost=fal
 
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final
 WORKDIR /app
+
+# Create directory for database
+RUN mkdir -p /var/data
+
 ENV ASPNETCORE_ENVIRONMENT=Production
 ENV ASPNETCORE_URLS=http://+:8080
+ENV DOTNET_EnableDiagnostics=0
 EXPOSE 8080
 
 COPY --from=build /app/publish .

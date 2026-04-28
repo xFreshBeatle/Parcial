@@ -14,3 +14,7 @@ services:
         value: Production
       - key: ConnectionStrings__DefaultConnection
         value: DataSource=/var/data/app.db;Cache=Shared
+      - key: ASPNETCORE_URLS
+        value: http://+:8080
+      - key: DOTNET_EnableDiagnostics
+        value: "0"
