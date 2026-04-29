@@ -30,9 +30,32 @@ var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
+    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
-    await EnsureSeedIdentityAsync(roleManager, userManager);
+
+    try
+    {
+        // Create Data directory if it doesn't exist
+        var dbPath = dbContext.Database.GetConnectionString()?.Split("=")[1]?.Split(";")[0];
+        if (!string.IsNullOrWhiteSpace(dbPath))
+        {
+            var dbDirectory = Path.GetDirectoryName(dbPath);
+            if (!string.IsNullOrWhiteSpace(dbDirectory) && !Directory.Exists(dbDirectory))
+            {
+                Directory.CreateDirectory(dbDirectory);
+            }
+        }
+
+        // Apply migrations
+        await dbContext.Database.MigrateAsync();
+        await EnsureSeedIdentityAsync(roleManager, userManager);
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Database initialization error: {ex.Message}");
+        throw;
+    }
 }
 
 // Configure the HTTP request pipeline.
